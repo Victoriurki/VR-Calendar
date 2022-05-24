@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:vr_project/table_calendar_examples/start_page.dart';
 import 'home_page.dart';
 
 class MyApp extends StatelessWidget {
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(title: 'Flutter Demo Home Page'),
+      home: const StartPage(),
     );
   }
 }

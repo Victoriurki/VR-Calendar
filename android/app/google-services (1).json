@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "387692813225",
+    "project_id": "vr-calendar-871f2",
+    "storage_bucket": "vr-calendar-871f2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:387692813225:android:50a9b5a028b355288fc2b8",
+        "android_client_info": {
+          "package_name": "com.example.vr_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "387692813225-bt6de60ov8bivfuo2fjbjn7hmi5ch7ip.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vr_project",
+            "certificate_hash": "425489aa449ed268e65a7e4ae8aa72438508d1bb"
+          }
+        },
+        {
+          "client_id": "387692813225-237bd9daec5ch3u6qm11a5hdiobbpo5q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2e2xmW4ja766FpdT_Si8GnlTdQPNoeLM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "387692813225-237bd9daec5ch3u6qm11a5hdiobbpo5q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -28,7 +28,9 @@ class _StartPageState extends State<StartPage> {
               child: const Text('Basics'),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const TableBasicsExample()),
+                MaterialPageRoute(
+                  builder: (_) => const TableBasicsExample(),
+                ),
               ),
             ),
             const SizedBox(height: 12.0),
@@ -36,7 +38,9 @@ class _StartPageState extends State<StartPage> {
               child: const Text('Range Selection'),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const TableRangeExample()),
+                MaterialPageRoute(
+                  builder: (_) => const TableRangeExample(),
+                ),
               ),
             ),
             const SizedBox(height: 12.0),
@@ -44,7 +48,9 @@ class _StartPageState extends State<StartPage> {
               child: const Text('Events'),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const TableEventsExample()),
+                MaterialPageRoute(
+                  builder: (_) => const TableEventsExample(),
+                ),
               ),
             ),
             const SizedBox(height: 12.0),
@@ -52,7 +58,9 @@ class _StartPageState extends State<StartPage> {
               child: const Text('Multiple Selection'),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const TableMultiExample()),
+                MaterialPageRoute(
+                  builder: (_) => const TableMultiExample(),
+                ),
               ),
             ),
             const SizedBox(height: 12.0),
@@ -60,7 +68,9 @@ class _StartPageState extends State<StartPage> {
               child: const Text('Complex'),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const TableComplexExample()),
+                MaterialPageRoute(
+                  builder: (_) => const TableComplexExample(),
+                ),
               ),
             ),
             const SizedBox(height: 20.0),

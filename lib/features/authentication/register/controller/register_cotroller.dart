@@ -60,7 +60,7 @@ abstract class _RegisterControllerBase with Store {
       password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
 
   @computed
-  bool get passwordHasNumbers => password.contains(RegExp(r'[0-9]'));
+  bool get passwordHasNumbers => password.contains(RegExp(r'^[0-9]'));
 
   @computed
   bool get passwordHasUpperCase => password.contains(RegExp(r'^[A-Z]'));

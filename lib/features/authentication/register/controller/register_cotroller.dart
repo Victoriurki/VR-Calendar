@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:dio/dio.dart';
@@ -83,6 +85,20 @@ abstract class _RegisterControllerBase with Store {
       });
       user = UserModel.fromMap(result.data);
       await _hive.put('token', user.token!);
+
+      String userEmail = user.email!;
+      String userFirstName = user.firstName!;
+      String userLastName = user.lastName!;
+
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc('$userEmail.$userFirstName.$userLastName')
+          .set({
+        "email": email,
+        "password": password,
+        "first_name": firstName,
+        "last_name": lastName,
+      });
 
       return Resource.success();
     } on DioError catch (e) {

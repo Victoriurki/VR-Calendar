@@ -5,7 +5,6 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../../core/generics/get_hashcode.dart';
 import '../../../../core/models/event_model.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -17,6 +16,7 @@ class _HomePageState extends State<HomePage> {
   late DateTime kToday;
   late DateTime kFirstDay;
   late DateTime kLastDay;
+  late Map<DateTime, List<Event>> kEvents;
   final ValueNotifier<DateTime> _focusedDay = ValueNotifier(
     DateTime.now(),
   );
@@ -24,6 +24,9 @@ class _HomePageState extends State<HomePage> {
     equals: isSameDay,
     hashCode: getHashCode,
   );
+  List<Event> getEventsForDay(DateTime day) {
+    return kEvents[day] ?? [];
+  }
 
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
@@ -45,6 +48,7 @@ class _HomePageState extends State<HomePage> {
     );
     _selectedDays.add(_focusedDay.value);
     super.initState();
+    kEvents = {};
   }
 
   @override
@@ -62,7 +66,7 @@ class _HomePageState extends State<HomePage> {
             rangeStartDay: _rangeStart,
             rangeEndDay: _rangeEnd,
             rangeSelectionMode: _rangeSelectionMode,
-            
+            eventLoader: getEventsForDay,
             onDaySelected: (selectedDay, focusedDay) {
               if (!isSameDay(_selectedDay, selectedDay)) {
                 setState(
@@ -90,9 +94,28 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: const Icon(Icons.add),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Add Event'),
+            content: Text('Add Event Title'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Ok'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+            ],
+          ),
+        ),
+        label: Text(
+          'Add Event',
+        ),
+        icon: Icon(Icons.add),
       ),
     );
   }

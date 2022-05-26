@@ -110,12 +110,14 @@ class _TableComplexExampleState extends State<TableComplexExample> {
                   setState(() => _focusedDay.value = DateTime.now());
                 },
                 onClearButtonTap: () {
-                  setState(() {
-                    _rangeStart = null;
-                    _rangeEnd = null;
-                    _selectedDays.clear();
-                    _selectedEvents.value = [];
-                  });
+                  setState(
+                    () {
+                      _rangeStart = null;
+                      _rangeEnd = null;
+                      _selectedDays.clear();
+                      _selectedEvents.value = [];
+                    },
+                  );
                 },
                 onLeftArrowTap: () {
                   _pageController.previousPage(

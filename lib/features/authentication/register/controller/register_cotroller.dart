@@ -77,12 +77,15 @@ abstract class _RegisterControllerBase with Store {
   @action
   Future<Resource<void, String>> registerUser() async {
     try {
-      final result = await _dio.post(ApiRoutes.registerRoute, data: {
-        "email": email,
-        "password": password,
-        "first_name": firstName,
-        "last_name": lastName,
-      });
+      final result = await _dio.post(
+        ApiRoutes.registerRoute,
+        data: {
+          "email": email,
+          "password": password,
+          "first_name": firstName,
+          "last_name": lastName,
+        },
+      );
       user = UserModel.fromMap(result.data);
       await _hive.put('token', user.token!);
 

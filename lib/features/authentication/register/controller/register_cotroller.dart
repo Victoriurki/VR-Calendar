@@ -60,10 +60,10 @@ abstract class _RegisterControllerBase with Store {
       password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
 
   @computed
-  bool get passwordHasNumbers => password.contains(RegExp(r'^[0-9]'));
+  bool get passwordHasNumbers => password.contains(RegExp(r'[0-9]'));
 
   @computed
-  bool get passwordHasUpperCase => password.contains(RegExp(r'^[A-Z]'));
+  bool get passwordHasUpperCase => password.contains(RegExp(r'[A-Z]'));
 
   @observable
   String confirmPassword = '';
@@ -86,13 +86,17 @@ abstract class _RegisterControllerBase with Store {
       user = UserModel.fromMap(result.data);
       await _hive.put('token', user.token!);
 
-      String userEmail = user.email!;
-      String userFirstName = user.firstName!;
-      String userLastName = user.lastName!;
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      var currentUser = FirebaseAuth.instance.currentUser;
 
       await FirebaseFirestore.instance
           .collection("users")
-          .doc('$userEmail.$userFirstName.$userLastName')
+          .doc('$currentUser')
           .set({
         "email": email,
         "password": password,
@@ -103,8 +107,37 @@ abstract class _RegisterControllerBase with Store {
       return Resource.success();
     } on DioError catch (e) {
       return Resource.failed(error: e.response!.toString());
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        return Resource.failed(error: 'The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        return Resource.failed(
+            error: 'The account already exists for that email.');
+      } else {
+        return Resource.failed(error: e.code);
+      }
     }
   }
+
+  // Future<Resource<void, String>> registerUserAuthentication() async {
+  //   try {
+  //     final credential =
+  //         await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+  //     return Resource.success();
+  //   } on FirebaseAuthException catch (e) {
+  //     if (e.code == 'weak-password') {
+  //       return Resource.failed(error: 'The password provided is too weak.');
+  //     } else if (e.code == 'email-already-in-use') {
+  //       return Resource.failed(
+  //           error: 'The account already exists for that email.');
+  //     } else {
+  //       return Resource.failed(error: e.code);
+  //     }
+  //   }
+  // }
 
   @observable
   bool isPasswordVisible = false;

@@ -20,161 +20,179 @@ class RegiterPage extends StatelessWidget {
       body: SafeArea(
           child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 48),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              child: Hero(
-                  child: Image.asset('lib/Assets/calendar_logo.png'),
-                  tag: 'app-logo'),
-            ),
-            Text(
-              'Register',
-              style:
-                  GoogleFonts.roboto(fontSize: 32, fontWeight: FontWeight.bold),
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Observer(builder: (_) {
-                  return TextField(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                child: Hero(
+                    child: Image.asset('lib/Assets/calendar_logo.png'),
+                    tag: 'app-logo'),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Text(
+                'Register',
+                style: GoogleFonts.roboto(
+                    fontSize: 32, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Observer(builder: (_) {
+                    return TextField(
+                        decoration: InputDecoration(
+                          hintText: 'First Name',
+                          hintStyle: GoogleFonts.roboto(),
+                          fillColor: const Color.fromARGB(255, 217, 217, 217),
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                            ),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        onChanged: _controller.changeFirstName);
+                  }),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Observer(builder: (_) {
+                    return TextField(
                       decoration: InputDecoration(
-                        hintText: 'First Name',
+                        hintText: 'Last Name',
                         hintStyle: GoogleFonts.roboto(),
                         fillColor: const Color.fromARGB(255, 217, 217, 217),
                         filled: true,
                         border: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.black,
-                          ),
+                          borderSide: const BorderSide(color: Colors.black),
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      onChanged: _controller.changeFirstName);
-                }),
-                const SizedBox(
-                  height: 8,
-                ),
-                Observer(builder: (_) {
-                  return TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Last Name',
-                      hintStyle: GoogleFonts.roboto(),
-                      fillColor: const Color.fromARGB(255, 217, 217, 217),
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(16),
+                      onChanged: _controller.changeLastName,
+                    );
+                  }),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Observer(builder: (_) {
+                    return TextField(
+                      decoration: InputDecoration(
+                        hintText: 'E-Mail',
+                        hintStyle: GoogleFonts.roboto(),
+                        fillColor: const Color.fromARGB(255, 217, 217, 217),
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
-                    ),
-                    onChanged: _controller.changeLastName,
-                  );
-                }),
-                const SizedBox(
-                  height: 8,
-                ),
-                Observer(builder: (_) {
-                  return TextField(
-                    decoration: InputDecoration(
-                      hintText: 'E-Mail',
-                      hintStyle: GoogleFonts.roboto(),
-                      fillColor: const Color.fromARGB(255, 217, 217, 217),
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(16),
+                      onChanged: _controller.ChangeEmail,
+                    );
+                  }),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Observer(builder: (_) {
+                    return TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Password',
+                        hintStyle: GoogleFonts.roboto(),
+                        fillColor: const Color.fromARGB(255, 217, 217, 217),
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
-                    ),
-                    onChanged: _controller.ChangeEmail,
-                  );
-                }),
-                const SizedBox(
-                  height: 8,
-                ),
-                Observer(builder: (_) {
-                  return TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      hintStyle: GoogleFonts.roboto(),
-                      fillColor: const Color.fromARGB(255, 217, 217, 217),
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(16),
+                      onChanged: _controller.changePassword,
+                    );
+                  }),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Observer(builder: (_) {
+                    return TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Confirm Password',
+                        hintStyle: GoogleFonts.roboto(),
+                        fillColor: const Color.fromARGB(255, 217, 217, 217),
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
-                    ),
-                    onChanged: _controller.changePassword,
-                  );
-                }),
-                const SizedBox(
-                  height: 8,
-                ),
-                Observer(builder: (_) {
-                  return TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Confirm Password',
-                      hintStyle: GoogleFonts.roboto(),
-                      fillColor: const Color.fromARGB(255, 217, 217, 217),
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    onChanged: _controller.changeConfirmPassword,
-                  );
-                }),
-                const SizedBox(
-                  height: 24,
-                ),
-                Observer(builder: (_) {
-                  bool isLoading = _controller.isButtonLoading;
-                  return SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: MediaQuery.of(context).size.height * 0.06,
-                    child: ElevatedButton(
-                      style: const ButtonStyle(),
-                      onPressed: _controller.areCredentialsValid
-                          ? () async {
-                              _controller.setButtonToLoading();
-                              final resource = await _controller.registerUser();
-                              if (resource.hasError) {
-                                await showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return Dialog(
-                                            backgroundColor: Colors.amber,
-                                            child: Text(resource.error!),
-                                          );
-                                        })
-                                    .then((_) =>
-                                        _controller.isButtonLoading = false);
+                      onChanged: _controller.changeConfirmPassword,
+                    );
+                  }),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.07),
+                  Observer(builder: (_) {
+                    bool isLoading = _controller.isButtonLoading;
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.7,
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      child: ElevatedButton(
+                        style: const ButtonStyle(),
+                        onPressed: _controller.areCredentialsValid
+                            ? () async {
+                                _controller.setButtonToLoading();
+                                final resource =
+                                    await _controller.registerUser();
+                                if (resource.hasError) {
+                                  await showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return Dialog(
+                                              elevation: 10,
+                                              backgroundColor:
+                                                  const Color.fromARGB(255, 255, 255, 255),
+                                              child: FittedBox(
+                                                fit: BoxFit.contain,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
+                                                  child: Text(
+                                                    resource.error!,
+                                                    textAlign: TextAlign.center,
+                                                    style: GoogleFonts.roboto(
+                                                        fontWeight:
+                                                            FontWeight.bold, fontSize: 22),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          })
+                                      .then((_) =>
+                                          _controller.isButtonLoading = false);
+                                }
+                                if (resource.status == Status.success) {
+                                  await Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LoginPage()));
+                                }
                               }
-                              if (resource.status == Status.success) {
-                                await Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            LoginPage()));
-                              }
-                            }
-                          : null,
-                      child: isLoading
-                          ? Container(
-                              width: 24,
-                              height: 24,
-                              child: Lottie.network(
-                                  "https://assets7.lottiefiles.com/packages/lf20_yfrk3mpo.json"))
-                          : Text(_controller.areCredentialsValid
-                              ? 'Entrar'
-                              : "Credenciais Invàlidas"),
-                    ),
-                  );
-                }),
-              ],
-            )
-          ],
+                            : null,
+                        child: isLoading
+                            ? Container(
+                                width: 24,
+                                height: 24,
+                                color: Colors.transparent,
+                                child: Lottie.asset(
+                                    "lib/Assets/99680-3-dots-loading.json"))
+                            : Text(_controller.areCredentialsValid
+                                ? 'Entrar'
+                                : "Credenciais Invàlidas"),
+                      ),
+                    );
+                  }),
+                ],
+              )
+            ],
+          ),
         ),
       )),
     );

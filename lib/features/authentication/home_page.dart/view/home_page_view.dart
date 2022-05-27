@@ -144,8 +144,7 @@ class _HomePageState extends State<HomePage> {
           builder: (context) => AlertDialog(
             title: Text('Add Event'),
             content: TextFormField(
-              controller: eventController,
-              //Text('Add Event Title'),
+              controller: eventController,              
             ),
             actions: [
               TextButton(

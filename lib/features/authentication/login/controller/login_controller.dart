@@ -41,7 +41,7 @@ abstract class _LoginControllerBase with Store {
   void changePasswordVisibility() => isPasswordVisible = !isPasswordVisible;
 
   @computed
-  bool get areCredencialsValis => isEmailValid && isPasswordValid;
+  bool get areCredencialsValid => isEmailValid && isPasswordValid;
 
   @action
   Future<Resource<void, String>> loginUser() async {
@@ -74,5 +74,5 @@ abstract class _LoginControllerBase with Store {
       email.isNotEmpty && email.contains('@') && email.contains(".com");
 
   @computed
-  bool get isPasswordValid => password.length > 7;
+  bool get isPasswordValid => password.isNotEmpty;
 }

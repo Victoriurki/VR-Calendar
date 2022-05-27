@@ -95,7 +95,7 @@ abstract class _RegisterControllerBase with Store {
         password: password,
       );
 
-      var currentUser = FirebaseAuth.instance.currentUser;
+      var currentUser = FirebaseAuth.instance.currentUser!.uid;
 
       await FirebaseFirestore.instance
           .collection("users")
@@ -121,26 +121,6 @@ abstract class _RegisterControllerBase with Store {
       }
     }
   }
-
-  // Future<Resource<void, String>> registerUserAuthentication() async {
-  //   try {
-  //     final credential =
-  //         await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  //       email: email,
-  //       password: password,
-  //     );
-  //     return Resource.success();
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'weak-password') {
-  //       return Resource.failed(error: 'The password provided is too weak.');
-  //     } else if (e.code == 'email-already-in-use') {
-  //       return Resource.failed(
-  //           error: 'The account already exists for that email.');
-  //     } else {
-  //       return Resource.failed(error: e.code);
-  //     }
-  //   }
-  // }
 
   @observable
   bool isPasswordVisible = false;

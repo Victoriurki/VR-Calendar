@@ -156,7 +156,7 @@ class RegiterPage extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const LoginPage()));
+                                            LoginPage()));
                               }
                             }
                           : null,
@@ -165,7 +165,7 @@ class RegiterPage extends StatelessWidget {
                               width: 24,
                               height: 24,
                               child: Lottie.network(
-                                  "https://assets9.lottiefiles.com/private_files/lf30_ykdoon9j.json"))
+                                  "https://assets7.lottiefiles.com/packages/lf20_yfrk3mpo.json"))
                           : Text(_controller.areCredentialsValid
                               ? 'Entrar'
                               : "Credenciais Invàlidas"),

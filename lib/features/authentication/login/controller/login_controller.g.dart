@@ -9,12 +9,12 @@ part of 'login_controller.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$LoginController on _LoginControllerBase, Store {
-  Computed<bool>? _$areCredencialsValisComputed;
+  Computed<bool>? _$areCredencialsValidComputed;
 
   @override
-  bool get areCredencialsValis => (_$areCredencialsValisComputed ??=
-          Computed<bool>(() => super.areCredencialsValis,
-              name: '_LoginControllerBase.areCredencialsValis'))
+  bool get areCredencialsValid => (_$areCredencialsValidComputed ??=
+          Computed<bool>(() => super.areCredencialsValid,
+              name: '_LoginControllerBase.areCredencialsValid'))
       .value;
   Computed<bool>? _$isEmailValidComputed;
 
@@ -112,6 +112,14 @@ mixin _$LoginController on _LoginControllerBase, Store {
     });
   }
 
+  late final _$loginUserAsyncAction =
+      AsyncAction('_LoginControllerBase.loginUser', context: context);
+
+  @override
+  Future<Resource<void, String>> loginUser() {
+    return _$loginUserAsyncAction.run(() => super.loginUser());
+  }
+
   late final _$_LoginControllerBaseActionController =
       ActionController(name: '_LoginControllerBase', context: context);
 
@@ -167,7 +175,7 @@ password: ${password},
 user: ${user},
 isPasswordVisible: ${isPasswordVisible},
 isButtonAtLoadingStatus: ${isButtonAtLoadingStatus},
-areCredencialsValis: ${areCredencialsValis},
+areCredencialsValid: ${areCredencialsValid},
 isEmailValid: ${isEmailValid},
 isPasswordValid: ${isPasswordValid}
     ''';

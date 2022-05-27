@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
             seedColor: Color.fromARGB(255, 255, 255, 255), brightness: Brightness.light),
       ),
-      home: SplashScreen(),
+      home: StartPage(),
     );
   }
 }

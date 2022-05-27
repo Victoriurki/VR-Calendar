@@ -1,8 +1,8 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'utils.dart';
+import '../core/generics/get_hashcode.dart';
+import '../core/models/event_model.dart';
 
 class TableComplexExample extends StatefulWidget {
   const TableComplexExample({Key? key}) : super(key: key);
@@ -12,13 +12,20 @@ class TableComplexExample extends StatefulWidget {
 }
 
 class _TableComplexExampleState extends State<TableComplexExample> {
-  late final PageController _pageController;
+  late DateTime kToday;
+  late DateTime kFirstDay;
+  late DateTime kLastDay;
+  late DateTime? _selectedDay;
+
   late final ValueNotifier<List<Event>> _selectedEvents;
+  late Map<DateTime, List<Event>> kEvents;
   final ValueNotifier<DateTime> _focusedDay = ValueNotifier(DateTime.now());
+
   final Set<DateTime> _selectedDays = LinkedHashSet<DateTime>(
     equals: isSameDay,
     hashCode: getHashCode,
   );
+  TextEditingController eventController = TextEditingController();
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
   DateTime? _rangeStart;
@@ -27,9 +34,21 @@ class _TableComplexExampleState extends State<TableComplexExample> {
   @override
   void initState() {
     super.initState();
-
+    kToday = DateTime.now();
+    kFirstDay = DateTime(
+      kToday.year,
+      kToday.month - 3,
+      kToday.day,
+    );
+    kLastDay = DateTime(
+      kToday.year,
+      kToday.month + 12,
+      kToday.day,
+    );
+    kEvents = {};
     _selectedDays.add(_focusedDay.value);
     _selectedEvents = ValueNotifier(_getEventsForDay(_focusedDay.value));
+    _selectedDay = kToday;
   }
 
   @override
@@ -38,9 +57,6 @@ class _TableComplexExampleState extends State<TableComplexExample> {
     _selectedEvents.dispose();
     super.dispose();
   }
-
-  bool get canClearSelection =>
-      _selectedDays.isNotEmpty || _rangeStart != null || _rangeEnd != null;
 
   List<Event> _getEventsForDay(DateTime day) {
     return kEvents[day] ?? [];
@@ -52,24 +68,35 @@ class _TableComplexExampleState extends State<TableComplexExample> {
     ];
   }
 
+  List<DateTime> daysInRange(DateTime first, DateTime last) {
+    final dayCount = last.difference(first).inDays + 1;
+    return List.generate(
+      dayCount,
+      (index) => DateTime.utc(first.year, first.month, first.day + index),
+    );
+  }
+
   List<Event> _getEventsForRange(DateTime start, DateTime end) {
     final days = daysInRange(start, end);
     return _getEventsForDays(days);
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    setState(() {
-      if (_selectedDays.contains(selectedDay)) {
-        _selectedDays.remove(selectedDay);
-      } else {
-        _selectedDays.add(selectedDay);
-      }
-
-      _focusedDay.value = focusedDay;
-      _rangeStart = null;
-      _rangeEnd = null;
-      _rangeSelectionMode = RangeSelectionMode.toggledOff;
-    });
+    setState(
+      () {
+        _selectedDay = focusedDay;
+        if (_selectedDays.contains(selectedDay)) {
+          _selectedDays.remove(selectedDay);
+          _selectedDay = kToday;
+        } else {
+          _selectedDays.add(selectedDay);
+        }
+        _focusedDay.value = focusedDay;
+        _rangeStart = null;
+        _rangeEnd = null;
+        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+      },
+    );
 
     _selectedEvents.value = _getEventsForDays(_selectedDays);
   }
@@ -99,41 +126,8 @@ class _TableComplexExampleState extends State<TableComplexExample> {
         title: const Text('TableCalendar - Complex'),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ValueListenableBuilder<DateTime>(
-            valueListenable: _focusedDay,
-            builder: (context, value, _) {
-              return _CalendarHeader(
-                focusedDay: value,
-                clearButtonVisible: canClearSelection,
-                onTodayButtonTap: () {
-                  setState(() => _focusedDay.value = DateTime.now());
-                },
-                onClearButtonTap: () {
-                  setState(
-                    () {
-                      _rangeStart = null;
-                      _rangeEnd = null;
-                      _selectedDays.clear();
-                      _selectedEvents.value = [];
-                    },
-                  );
-                },
-                onLeftArrowTap: () {
-                  _pageController.previousPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                },
-                onRightArrowTap: () {
-                  _pageController.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                },
-              );
-            },
-          ),
           TableCalendar<Event>(
             firstDay: kFirstDay,
             lastDay: kLastDay,
@@ -145,13 +139,8 @@ class _TableComplexExampleState extends State<TableComplexExample> {
             calendarFormat: _calendarFormat,
             rangeSelectionMode: _rangeSelectionMode,
             eventLoader: _getEventsForDay,
-            holidayPredicate: (day) {
-              // Every 20th day of the month will be treated as a holiday
-              return day.day == 20;
-            },
             onDaySelected: _onDaySelected,
             onRangeSelected: _onRangeSelected,
-            onCalendarCreated: (controller) => _pageController = controller,
             onPageChanged: (focusedDay) => _focusedDay.value = focusedDay,
             onFormatChanged: (format) {
               if (_calendarFormat != format) {
@@ -159,94 +148,56 @@ class _TableComplexExampleState extends State<TableComplexExample> {
               }
             },
           ),
-          const SizedBox(height: 8.0),
-          Expanded(
-            child: ValueListenableBuilder<List<Event>>(
-              valueListenable: _selectedEvents,
-              builder: (context, value, _) {
-                return ListView.builder(
-                  itemCount: value.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 4.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: ListTile(
-                        onTap: () => print('${value[index]}'),
-                        title: Text('${value[index]}'),
-                      ),
-                    );
-                  },
-                );
-              },
+          ..._getEventsForDay(_selectedDay!).map(
+            (Event event) => ListTile(
+              title: Text(event.title),
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _CalendarHeader extends StatelessWidget {
-  final DateTime focusedDay;
-  final VoidCallback onLeftArrowTap;
-  final VoidCallback onRightArrowTap;
-  final VoidCallback onTodayButtonTap;
-  final VoidCallback onClearButtonTap;
-  final bool clearButtonVisible;
-
-  const _CalendarHeader({
-    Key? key,
-    required this.focusedDay,
-    required this.onLeftArrowTap,
-    required this.onRightArrowTap,
-    required this.onTodayButtonTap,
-    required this.onClearButtonTap,
-    required this.clearButtonVisible,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final headerText = DateFormat.yMMM().format(focusedDay);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          const SizedBox(width: 16.0),
-          SizedBox(
-            width: 120.0,
-            child: Text(
-              headerText,
-              style: const TextStyle(fontSize: 26.0),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Add Event'),
+            content: TextFormField(
+              controller: eventController,
+              //Text('Add Event Title'),
             ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (eventController.text.isEmpty) {
+                    Navigator.pop(context);
+                    return;
+                  }
+                  if (kEvents[_selectedDay] != null) {
+                    kEvents[_selectedDay]!.add(
+                      Event(title: eventController.text),
+                    );
+                  } else {
+                    kEvents[_selectedDay!] = [
+                      Event(title: eventController.text)
+                    ];
+                  }
+                  Navigator.pop(context);
+                  eventController.clear();
+                  setState(() {});
+                  return;
+                },
+                child: Text('Ok'),
+              ),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.calendar_today, size: 20.0),
-            visualDensity: VisualDensity.compact,
-            onPressed: onTodayButtonTap,
-          ),
-          if (clearButtonVisible)
-            IconButton(
-              icon: const Icon(Icons.clear, size: 20.0),
-              visualDensity: VisualDensity.compact,
-              onPressed: onClearButtonTap,
-            ),
-          const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.chevron_left),
-            onPressed: onLeftArrowTap,
-          ),
-          IconButton(
-            icon: const Icon(Icons.chevron_right),
-            onPressed: onRightArrowTap,
-          ),
-        ],
+        ),
+        label: Text(
+          'Add Event',
+        ),
+        icon: Icon(Icons.add),
       ),
     );
   }

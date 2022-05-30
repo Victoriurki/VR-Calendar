@@ -29,7 +29,7 @@ abstract class _SplashScreenControllerBase with Store {
   Future<void> checkIfTokenExistsAndIsValid(BuildContext context) async {
     final localToken = await _hive.get('token');
 
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(milliseconds: 3500));
 
     if (localToken == null) {
       setupStatus =

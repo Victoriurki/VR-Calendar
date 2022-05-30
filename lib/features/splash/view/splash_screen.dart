@@ -25,8 +25,10 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Observer(builder: (_) {
           _controller.checkIfTokenExistsAndIsValid(context);
           return Lottie.asset(
-              "lib/Assets/63224-random-calendar.json",
-              animate: true);
+              "lib/Assets/lf30_editor_tvhr52gi.json",
+              animate: true,
+              repeat: false
+              );
         }),
       ),
     );

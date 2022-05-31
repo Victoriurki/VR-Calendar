@@ -27,23 +27,24 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const Drawer(),
       appBar: AppBar(
-        title: const Text('VR Calendar'),
+        centerTitle: true,
+        title: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.05,
+          child: Hero(
+              child: Image.asset('lib/Assets/calendar_logo.png'),
+              tag: 'app-logo'),
+        ),
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              _controller.populateEvents();
-            },
-            child: const Text('Set State'),
-          ),
-          Observer(
-            builder: (_) {
-              return Expanded(
-                child: TableCalendar<Event>(
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Observer(
+              builder: (_) {
+                return TableCalendar<Event>(
                   calendarStyle: const CalendarStyle(
                     selectedDecoration: BoxDecoration(
                       color: Colors.grey,
@@ -78,27 +79,41 @@ class HomePageState extends State<HomePage> {
                       );
                     }
                   },
-                ),
-              );
-            },
-          ),
-          Observer(
-            builder: (_) {
-              return Flexible(
-                child: ListView.builder(
+                );
+              },
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.01,
+            ),
+            Observer(
+              builder: (_) {
+                return ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: _controller.filteredEventsByDate.length,
                   shrinkWrap: true,
                   itemBuilder: ((context, index) {
-                    return ListTile(
-                      title:
-                          Text(_controller.filteredEventsByDate[index].title!),
+                    return Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(50),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                              _controller.filteredEventsByDate[index].title!),
+                        ),
+                      ),
                     );
                   }),
-                ),
-              );
-            },
-          )
-        ],
+                );
+              },
+            )
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => showDialog(

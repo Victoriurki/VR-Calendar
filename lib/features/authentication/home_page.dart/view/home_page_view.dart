@@ -34,6 +34,11 @@ class HomePageState extends State<HomePage> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          ElevatedButton(
+              onPressed: () {
+                _controller.populateEvents();
+              },
+              child: const Text('Set State')),
           Observer(
             builder: (_) {
               return Expanded(
@@ -100,6 +105,7 @@ class HomePageState extends State<HomePage> {
 
                     Navigator.pop(context);
                     eventController.clear();
+                    _controller.populateEvents();
                     setState(() {});
                     return;
                   },

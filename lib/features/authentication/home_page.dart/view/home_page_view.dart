@@ -1,140 +1,79 @@
-import 'dart:collection';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:table_calendar/table_calendar.dart';
-import '../../../../core/generics/get_hashcode.dart';
+import 'package:vr_project/features/authentication/home_page.dart/controller/home_page_controller.dart';
 import '../../../../core/models/event_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  late DateTime kToday;
-  late DateTime kFirstDay;
-  late DateTime kLastDay;
-  late DateTime? _selectedDay;
-  late Map<DateTime, List<Event>> kEvents;
-  final ValueNotifier<DateTime> _focusedDay = ValueNotifier(
-    DateTime.now(),
-  );
-  final Set<DateTime> _selectedDays = LinkedHashSet<DateTime>(
-    equals: isSameDay,
-    hashCode: getHashCode,
-  );
-  List<Event> getEventsForDay(DateTime day) {
-    return kEvents[day] ?? [];
-  }
-  
-  DateTime? _rangeStart;
-  DateTime? _rangeEnd;
+class HomePageState extends State<HomePage> {
+  final TextEditingController eventController = TextEditingController();
 
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOn;
-  TextEditingController eventController = TextEditingController();
+  final _controller = HomePageController();
 
   @override
   void initState() {
-    kToday = DateTime.now();
-    kFirstDay = DateTime(
-      kToday.year,
-      kToday.month - 3,
-      kToday.day,
-    );
-    kLastDay = DateTime(
-      kToday.year,
-      kToday.month + 12,
-      kToday.day,
-    );
-    _selectedDays.add(_focusedDay.value);
+    _controller.setFirstSelectedDay;
+    _controller.setDateTimeToTimestamp();
+    _controller.populateEvents();
     super.initState();
-    kEvents = {};
-    _selectedDay = kToday;
   }
-
-  @override
-  void dispose() {
-    eventController.dispose();
-    super.dispose();
-  }
-
-  void onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    setState(() {
-      if (_selectedDays.contains(selectedDay)) {
-        _selectedDays.remove(selectedDay);
-      } else {
-        _selectedDays.add(selectedDay);
-      }
-
-      _focusedDay.value = focusedDay;
-      _rangeStart = null;
-      _rangeEnd = null;
-      _rangeSelectionMode = RangeSelectionMode.toggledOff;
-    });
-
-    kEvents[_selectedDay!] = getEventsForDay(_selectedDay!);
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('TableCalendar - Complex'),
+      ),
       body: Column(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TableCalendar<Event>(
-            firstDay: kFirstDay,
-            focusedDay: kToday,
-            lastDay: kLastDay,
-            calendarFormat: CalendarFormat.month,
-            selectedDayPredicate: (day) => _selectedDays.contains(day),
-            rangeStartDay: _rangeStart,
-            rangeEndDay: _rangeEnd,
-            rangeSelectionMode: _rangeSelectionMode,
-            eventLoader: getEventsForDay,
-            onDaySelected: onDaySelected,
-            onRangeSelected: (start, end, focusedDay) {
-              if (start == null && end == null) {
-                setState(
-                  () {
-                    _selectedDay = kToday;
-                    _focusedDay.value = focusedDay;
-                    _rangeStart = null;
-                    _rangeEnd = null;
-                    _rangeSelectionMode = RangeSelectionMode.toggledOn;
+          Observer(
+            builder: (_) {
+              return Expanded(
+                child: TableCalendar<Event>(
+                  firstDay: DateTime(2022, 01, 01),
+                  lastDay: DateTime(2022, 12, 31),
+                  focusedDay: _controller.focusedDay,
+                  headerVisible: false,
+                  eventLoader: _controller.eventLoader,
+                  selectedDayPredicate: (day) =>
+                      _controller.selectedDays.contains(day),
+                  calendarFormat: _controller.calendarFormat,
+                  onDaySelected: _controller.onDaySelected,
+                  onPageChanged: (focusedDay) =>
+                      _controller.focusedDay = focusedDay,
+                  onFormatChanged: (format) {
+                    if (_controller.calendarFormat != format) {
+                      setState(() {
+                        _controller.setCalendarFormat(format);
+                      });
+                    }
                   },
-                );
-              }
-              if (start != null && end == null) {
-                setState(
-                  () {
-                    _selectedDay = start;
-                    _focusedDay.value = focusedDay;
-                    _rangeStart = null;
-                    _rangeEnd = null;
-                    _rangeSelectionMode = RangeSelectionMode.toggledOn;
-                  },
-                );
-              }
-              if (start != null && end != null) {
-                setState(
-                  () {
-                    _selectedDay = null;
-                    _focusedDay.value = focusedDay;
-                    _rangeStart = start;
-                    _rangeEnd = end;
-                    _rangeSelectionMode = RangeSelectionMode.toggledOn;
-                  },
-                );
-              } else
-                () {};
+                ),
+              );
             },
           ),
-          ...getEventsForDay(_selectedDay!).map(
-            (Event event) => ListTile(
-              title: Text(event.title),
-            ),
+          Observer(
+            builder: (_) {
+              return Flexible(
+                child: ListView.builder(
+                    itemCount: _controller.filteredEventsByDate.length,
+                    shrinkWrap: true,
+                    itemBuilder: ((context, index) {
+                      return ListTile(
+                        title: Text(
+                            _controller.filteredEventsByDate[index].title!),
+                      );
+                    })),
+              );
+            },
           )
         ],
       ),
@@ -142,44 +81,38 @@ class _HomePageState extends State<HomePage> {
         onPressed: () => showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Add Event'),
+            title: const Text('Add Event'),
             content: TextFormField(
-              controller: eventController,              
+              onChanged: _controller.changeTitle,
+              //Text('Add Event Title'),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
-              TextButton(
-                onPressed: () {
-                  if (eventController.text.isEmpty) {
-                    Navigator.pop(context);
-                    return;
-                  }
-                  if (kEvents[_selectedDay] != null) {
-                    kEvents[_selectedDay]!.add(
-                      Event(title: eventController.text),
+              Observer(builder: (_) {
+                return TextButton(
+                  onPressed: () async {
+                    await _controller.addEventFirestore(
+                      _controller.timestamp!,
                     );
-                  } else {
-                    kEvents[_selectedDay!] = [
-                      Event(title: eventController.text)
-                    ];
-                  }
-                  Navigator.pop(context);
-                  eventController.clear();
-                  setState(() {});
-                  return;
-                },
-                child: Text('Ok'),
-              ),
+
+                    Navigator.pop(context);
+                    eventController.clear();
+                    setState(() {});
+                    return;
+                  },
+                  child: const Text('Ok'),
+                );
+              }),
             ],
           ),
         ),
-        label: Text(
+        label: const Text(
           'Add Event',
         ),
-        icon: Icon(Icons.add),
+        icon: const Icon(Icons.add),
       ),
     );
   }

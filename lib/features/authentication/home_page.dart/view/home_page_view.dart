@@ -35,17 +35,32 @@ class HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(
-              onPressed: () {
-                _controller.populateEvents();
-              },
-              child: const Text('Set State')),
+            onPressed: () {
+              _controller.populateEvents();
+            },
+            child: const Text('Set State'),
+          ),
           Observer(
             builder: (_) {
               return Expanded(
                 child: TableCalendar<Event>(
+                  calendarStyle: const CalendarStyle(
+                    selectedDecoration: BoxDecoration(
+                      color: Colors.grey,
+                      shape: BoxShape.circle,
+                    ),
+                    weekendTextStyle: TextStyle(
+                      color: Colors.red,
+                    ),
+                    todayDecoration: BoxDecoration(
+                      color: Colors.pink,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
                   firstDay: DateTime(2022, 01, 01),
                   lastDay: DateTime(2022, 12, 31),
                   focusedDay: _controller.focusedDay,
+                  daysOfWeekVisible: true,
                   headerVisible: true,
                   eventLoader: _controller.eventLoader,
                   selectedDayPredicate: (day) =>
@@ -56,9 +71,11 @@ class HomePageState extends State<HomePage> {
                       _controller.focusedDay = focusedDay,
                   onFormatChanged: (format) {
                     if (_controller.calendarFormat != format) {
-                      setState(() {
-                        _controller.setCalendarFormat(format);
-                      });
+                      setState(
+                        () {
+                          _controller.setCalendarFormat(format);
+                        },
+                      );
                     }
                   },
                 ),
@@ -97,23 +114,25 @@ class HomePageState extends State<HomePage> {
                 onPressed: () => Navigator.pop(context),
                 child: const Text('Cancel'),
               ),
-              Observer(builder: (_) {
-                return TextButton(
-                  onPressed: () async {
-                    _controller.setDateTimeToTimestamp();
-                    await _controller.addEventFirestore(
-                      _controller.timestamp!,
-                    );
+              Observer(
+                builder: (_) {
+                  return TextButton(
+                    onPressed: () async {
+                      _controller.setDateTimeToTimestamp();
+                      await _controller.addEventFirestore(
+                        _controller.timestamp!,
+                      );
 
-                    Navigator.pop(context);
-                    eventController.clear();
-                    _controller.populateEvents();
-                    setState(() {});
-                    return;
-                  },
-                  child: const Text('Ok'),
-                );
-              }),
+                      Navigator.pop(context);
+                      eventController.clear();
+                      _controller.populateEvents();
+                      setState(() {});
+                      return;
+                    },
+                    child: const Text('Ok'),
+                  );
+                },
+              ),
             ],
           ),
         ),

@@ -18,7 +18,7 @@ class HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    _controller.setFirstSelectedDay;
+    _controller.setFirstSelectedDay();
     _controller.setDateTimeToTimestamp();
     _controller.populateEvents();
     super.initState();
@@ -28,7 +28,7 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TableCalendar - Complex'),
+        title: const Text('VR Calendar'),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -46,10 +46,10 @@ class HomePageState extends State<HomePage> {
                   firstDay: DateTime(2022, 01, 01),
                   lastDay: DateTime(2022, 12, 31),
                   focusedDay: _controller.focusedDay,
-                  headerVisible: false,
+                  headerVisible: true,
                   eventLoader: _controller.eventLoader,
                   selectedDayPredicate: (day) =>
-                      _controller.selectedDays.contains(day),
+                      isSameDay(_controller.selectedDay, day),
                   calendarFormat: _controller.calendarFormat,
                   onDaySelected: _controller.onDaySelected,
                   onPageChanged: (focusedDay) =>
@@ -69,14 +69,15 @@ class HomePageState extends State<HomePage> {
             builder: (_) {
               return Flexible(
                 child: ListView.builder(
-                    itemCount: _controller.filteredEventsByDate.length,
-                    shrinkWrap: true,
-                    itemBuilder: ((context, index) {
-                      return ListTile(
-                        title: Text(
-                            _controller.filteredEventsByDate[index].title!),
-                      );
-                    })),
+                  itemCount: _controller.filteredEventsByDate.length,
+                  shrinkWrap: true,
+                  itemBuilder: ((context, index) {
+                    return ListTile(
+                      title:
+                          Text(_controller.filteredEventsByDate[index].title!),
+                    );
+                  }),
+                ),
               );
             },
           )
@@ -99,6 +100,7 @@ class HomePageState extends State<HomePage> {
               Observer(builder: (_) {
                 return TextButton(
                   onPressed: () async {
+                    _controller.setDateTimeToTimestamp();
                     await _controller.addEventFirestore(
                       _controller.timestamp!,
                     );

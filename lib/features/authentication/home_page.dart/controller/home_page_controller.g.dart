@@ -236,11 +236,11 @@ mixin _$HomePageController on _HomePageControllerBase, Store {
   }
 
   @override
-  List<Event> eventLoader(DateTime day) {
+  List<Event> eventLoader(DateTime date) {
     final _$actionInfo = _$_HomePageControllerBaseActionController.startAction(
         name: '_HomePageControllerBase.eventLoader');
     try {
-      return super.eventLoader(day);
+      return super.eventLoader(date);
     } finally {
       _$_HomePageControllerBaseActionController.endAction(_$actionInfo);
     }

@@ -48,20 +48,24 @@ abstract class _HomePageControllerBase with Store {
 
   @action
   void setDateTimeToTimestamp() {
-    selectedDay = DateTime.now();
-    timestamp = Timestamp.fromDate(selectedDay!);
+    if (selectedDay == null) {
+      selectedDay = DateTime.now();
+      timestamp = Timestamp.fromDate(selectedDay!);
+    } else {
+      timestamp = Timestamp.fromDate(selectedDay!);
+    }
   }
 
   @action
   void onDaySelected(DateTime selectedDay, DateTime today) {
-    this.selectedDay = selectedDay;
+    this.selectedDay = DateTime(selectedDay.year, selectedDay.month,
+        selectedDay.day, selectedDay.hour + 5);
     focusedDay = today;
+    loadEventsByTimestamp(selectedDay);
 
-    if (selectedDays.contains(selectedDay)) {
-      selectedDays.remove(selectedDay);
-    } else {
-      selectedDays.add(selectedDay);
-      loadEventsByTimestamp(selectedDay);
+    if (!isSameDay(selectedDay, selectedDay)) {
+      selectedDay = selectedDay;
+      focusedDay = focusedDay;      
     }
   }
 
@@ -69,9 +73,11 @@ abstract class _HomePageControllerBase with Store {
   ObservableList<Event> filteredEventsByDate = <Event>[].asObservable();
 
   @action
-  List<Event> eventLoader(DateTime day) {
+  List<Event> eventLoader(DateTime date) {    
     return allEvents
-        .where((element) => element.date!.toDate().day == day.day)
+        .where((element) => (element.date!.toDate().year == date.year))
+        .where((element) => (element.date!.toDate().month == date.month))
+        .where((element) => (element.date!.toDate().day == date.day))
         .toList();
   }
 
@@ -94,8 +100,7 @@ abstract class _HomePageControllerBase with Store {
   void loadEventsByTimestamp(DateTime date) {
     filteredEventsByDate.clear();
     for (final event in allEvents) {
-      final eventDateTime = event.date!.toDate();
-      print(eventDateTime.day + eventDateTime.month);
+      final eventDateTime = event.date!.toDate();    
       if (eventDateTime.day == date.day &&
           eventDateTime.month == date.month &&
           eventDateTime.year == date.year) {

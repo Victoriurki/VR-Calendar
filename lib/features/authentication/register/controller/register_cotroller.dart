@@ -141,6 +141,9 @@ abstract class _RegisterControllerBase with Store {
   @action
   void setButtonToLoading() => isButtonLoading == true;
 
+  @action
+  void setPasswordVisibility() => isPasswordVisible = !isPasswordVisible;
+
   @computed
   bool get areCredentialsValid =>
       isEmailValid &&

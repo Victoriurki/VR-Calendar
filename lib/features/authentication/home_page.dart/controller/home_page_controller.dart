@@ -1,16 +1,21 @@
 import 'dart:collection';
 
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mobx/mobx.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:vr_project/core/generics/recource.dart';
 
 import '../../../../core/generics/get_hashcode.dart';
 import '../../../../core/models/event_model.dart';
 part 'home_page_controller.g.dart';
 
 class HomePageController = _HomePageControllerBase with _$HomePageController;
+
+final _hive = Hive.box<String>('Credentials');
 
 abstract class _HomePageControllerBase with Store {
   @observable
@@ -65,7 +70,7 @@ abstract class _HomePageControllerBase with Store {
 
     if (!isSameDay(selectedDay, selectedDay)) {
       selectedDay = selectedDay;
-      focusedDay = focusedDay;      
+      focusedDay = focusedDay;
     }
   }
 
@@ -73,7 +78,7 @@ abstract class _HomePageControllerBase with Store {
   ObservableList<Event> filteredEventsByDate = <Event>[].asObservable();
 
   @action
-  List<Event> eventLoader(DateTime date) {    
+  List<Event> eventLoader(DateTime date) {
     return allEvents
         .where((element) => (element.date!.toDate().year == date.year))
         .where((element) => (element.date!.toDate().month == date.month))
@@ -100,7 +105,7 @@ abstract class _HomePageControllerBase with Store {
   void loadEventsByTimestamp(DateTime date) {
     filteredEventsByDate.clear();
     for (final event in allEvents) {
-      final eventDateTime = event.date!.toDate();    
+      final eventDateTime = event.date!.toDate();
       if (eventDateTime.day == date.day &&
           eventDateTime.month == date.month &&
           eventDateTime.year == date.year) {
@@ -127,5 +132,16 @@ abstract class _HomePageControllerBase with Store {
       "title": title,
       "date": date,
     });
+  }
+
+  @action
+  Future<Resource<void, String>> logout() async {
+    try {
+      await _hive.delete('token');
+      await FirebaseAuth.instance.signOut();
+      return Resource.success();
+    } catch (e) {
+      return Resource.failed(error: e.toString());
+    }
   }
 }

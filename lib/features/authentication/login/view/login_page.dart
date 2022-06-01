@@ -58,7 +58,14 @@ class LoginPage extends StatelessWidget {
                     const SizedBox(height: 16),
                     Observer(builder: (_) {
                       return TextField(
+                        obscureText: !_controller.isPasswordVisible,
                         decoration: InputDecoration(
+                          suffixIcon: IconButton(
+                            onPressed: _controller.setPasswordVisibility,
+                            icon: !_controller.isPasswordVisible
+                                ? Icon(Icons.visibility)
+                                : Icon(Icons.visibility_off),
+                          ),
                           hintText: 'Password',
                           hintStyle: GoogleFonts.roboto(),
                           fillColor: const Color.fromARGB(255, 217, 217, 217),
@@ -95,7 +102,8 @@ class LoginPage extends StatelessWidget {
                                                     const Color.fromARGB(
                                                         255, 255, 255, 255),
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(16.0),
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
                                                   child: Text(
                                                     resource.error!,
                                                     textAlign: TextAlign.center,

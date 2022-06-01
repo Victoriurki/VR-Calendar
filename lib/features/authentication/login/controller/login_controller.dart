@@ -24,6 +24,9 @@ abstract class _LoginControllerBase with Store {
 
   @action
   void changePassword(String newValue) => password = newValue;
+  
+  @action
+  void setPasswordVisibility() => isPasswordVisible = !isPasswordVisible;
 
   @observable
   Resource<UserModel, String> user = Resource.loading();

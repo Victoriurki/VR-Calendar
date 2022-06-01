@@ -188,6 +188,14 @@ mixin _$HomePageController on _HomePageControllerBase, Store {
         .run(() => super.addEventFirestore(date));
   }
 
+  late final _$logoutAsyncAction =
+      AsyncAction('_HomePageControllerBase.logout', context: context);
+
+  @override
+  Future<Resource<void, String>> logout() {
+    return _$logoutAsyncAction.run(() => super.logout());
+  }
+
   late final _$_HomePageControllerBaseActionController =
       ActionController(name: '_HomePageControllerBase', context: context);
 

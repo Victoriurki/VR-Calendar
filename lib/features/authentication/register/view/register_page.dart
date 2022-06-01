@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:vr_project/core/generics/recource.dart';
 
+import '../../home_page.dart/view/home_page_view.dart';
 import '../../login/view/login_page.dart';
 import '../controller/register_cotroller.dart';
 
@@ -97,7 +98,14 @@ class RegiterPage extends StatelessWidget {
                   ),
                   Observer(builder: (_) {
                     return TextField(
+                      obscureText: !_controller.isPasswordVisible,
                       decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                            onPressed: _controller.setPasswordVisibility,
+                            icon: !_controller.isPasswordVisible
+                                ? const Icon(Icons.visibility)
+                                : const Icon(Icons.visibility_off),
+                          ),
                         hintText: 'Password',
                         hintStyle: GoogleFonts.roboto(),
                         fillColor: const Color.fromARGB(255, 217, 217, 217),
@@ -115,11 +123,19 @@ class RegiterPage extends StatelessWidget {
                   ),
                   Observer(builder: (_) {
                     return TextField(
+                      obscureText: !_controller.isConfirmPasswordVisible,
                       decoration: InputDecoration(
                         hintText: 'Confirm Password',
                         hintStyle: GoogleFonts.roboto(),
                         fillColor: const Color.fromARGB(255, 217, 217, 217),
                         filled: true,
+                        
+                        suffixIcon: IconButton(
+                            onPressed: _controller.setConfirmPasswordVisibility,
+                            icon: !_controller.isConfirmPasswordVisible
+                                ? const Icon(Icons.visibility)
+                                : const Icon(Icons.visibility_off),
+                          ),
                         border: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.black),
                           borderRadius: BorderRadius.circular(16),
@@ -172,7 +188,7 @@ class RegiterPage extends StatelessWidget {
                                   await Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => LoginPage()));
+                                          builder: (context) => const HomePage()));
                                 }
                               }
                             : null,

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:vr_project/features/authentication/home_page.dart/controller/home_page_controller.dart';
+import 'package:vr_project/features/authentication/login/view/login_page.dart';
 import '../../../../core/models/event_model.dart';
+import 'package:vr_project/core/generics/recource.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -27,7 +29,47 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Drawer(),
+      drawer: Drawer(
+        child: SafeArea(
+            child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.black,
+                  ),
+                  shape: BoxShape.rectangle,
+                ),
+                child: const Icon(
+                  Icons.person,
+                  size: 128,
+                ),
+              ),
+              ListTile(
+                title: const Text(
+                  'Logout',
+                  textAlign: TextAlign.center,
+                ),
+                onTap: () async {
+                  final result = await _controller.logout();
+                  if (!result.hasError) {
+                    await Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: ((context) => LoginPage()),
+                      ),
+                    );
+                  }
+                },
+              )
+            ],
+          ),
+        )),
+      ),
       appBar: AppBar(
         centerTitle: true,
         title: SizedBox(
